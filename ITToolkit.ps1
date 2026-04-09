@@ -167,6 +167,7 @@ function New-CategoryPage {
     )
 
     $entries = New-Object System.Collections.ArrayList
+    $getCategoryEntriesFn = ${function:Get-CategoryEntries}
 
     $page = New-Object System.Windows.Forms.Panel
     $page.Dock = [System.Windows.Forms.DockStyle]::Fill
@@ -406,7 +407,7 @@ function New-CategoryPage {
         $advancedEntries.Clear()
         $mainEntries.Clear()
 
-        $loaded = Get-CategoryEntries -FolderName $Category.FolderName
+        $loaded = & $getCategoryEntriesFn -FolderName $Category.FolderName
         foreach ($entry in $loaded) {
             [void]$entries.Add($entry)
 
