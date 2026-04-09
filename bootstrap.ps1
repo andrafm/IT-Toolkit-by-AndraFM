@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 
 $repoOwner = "andrafirmansyah250699-ship-it"
 $repoName = "IT-Toolkit-by-AndraFM"
-$releaseTag = "v2.1.3"
+$releaseTag = "v2.1.4"
 
 $zipUrl = "https://github.com/$repoOwner/$repoName/archive/refs/tags/$releaseTag.zip"
 $tempRoot = Join-Path $env:TEMP "ITToolkit-AndraFM"
@@ -40,5 +40,3 @@ if ([string]::IsNullOrWhiteSpace($toolkitPath) -or -not (Test-Path -Path $toolki
 
 Write-Host "Launching toolkit..." -ForegroundColor Green
 & $toolkitPath
-
-Invoke-Expression $scriptContent
