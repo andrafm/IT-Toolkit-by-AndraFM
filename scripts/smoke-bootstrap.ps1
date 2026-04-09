@@ -1,10 +1,10 @@
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
 param(
     [string]$RepoOwner = "andrafirmansyah250699-ship-it",
     [string]$RepoName = "IT-Toolkit-by-AndraFM"
 )
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 
 function Assert-True {
     param(
