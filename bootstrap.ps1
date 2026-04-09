@@ -39,4 +39,5 @@ if ([string]::IsNullOrWhiteSpace($toolkitPath) -or -not (Test-Path -Path $toolki
 }
 
 Write-Host "Launching toolkit..." -ForegroundColor Green
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 & $toolkitPath
