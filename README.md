@@ -1,63 +1,51 @@
-# AndraFM All-in-One IT Toolkit (PowerShell + IRM)
+# IT Toolkit by AndraFM_
 
-Toolkit ini dibuat untuk kebutuhan IT harian dengan GUI interaktif (Windows Forms) langsung dari PowerShell.
+Toolkit IT berbasis PowerShell GUI (Windows Forms) dengan arsitektur modular per aksi. Project ini mendukung eksekusi lokal maupun skenario remote `irm | iex`.
 
-## 1) File Structure
+## Features
 
-- `ITToolkit.ps1` -> script utama GUI Toolkit (tab: Maintenance, Networking, Security, Update)
-- `bootstrap.ps1` -> loader kecil untuk skenario `irm ... | iex`
-- `maintenance-configs/*.ps1` -> setiap konfigurasi maintenance dipisah per file
-- `networking-configs/*.ps1` -> konfigurasi modular tab Networking
-- `security-configs/*.ps1` -> konfigurasi modular tab Security
-- `update-configs/*.ps1` -> konfigurasi modular tab Update
+- GUI kategori: Maintenance, Networking, Security, Update
+- Kategori Maintenance mendukung grouping `Basic` dan `Advanced`
+- Preset `Recommended Selection` (Standart, Minimal, Clear)
+- Loader untuk eksekusi remote via `bootstrap.ps1`
+- Struktur modular: 1 script aksi = 1 file config
 
-## 2) Cara Pakai Lokal
+## Project Structure
+
+- `ITToolkit.ps1` -> GUI utama
+- `bootstrap.ps1` -> script loader untuk `irm | iex`
+- `maintenance-configs/*.ps1` -> aksi maintenance
+- `networking-configs/*.ps1` -> aksi networking
+- `security-configs/*.ps1` -> aksi security
+- `update-configs/*.ps1` -> aksi update
+
+## Run Local
 
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force
 .\ITToolkit.ps1
 ```
 
-## 3) Cara Pakai via IRM
+## Run via IRM
 
-1. Upload `ITToolkit.ps1` dan `bootstrap.ps1` ke GitHub repo public.
-2. Ambil raw URL `bootstrap.ps1`.
-3. Jalankan command ini:
+Gunakan command berikut:
 
 ```powershell
-irm "https://raw.githubusercontent.com/<username>/<repo>/<branch>/bootstrap.ps1" | iex
+irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/master/bootstrap.ps1" | iex
 ```
 
-## 4) Security Notes (Recommended)
+## Screenshot
 
-- Jangan pakai URL yang tidak kamu kontrol.
-- Pin ke branch/tag tertentu (hindari URL mutable tanpa kontrol).
-- Tambahkan checksum validation jika mau lebih aman.
-- Idealnya script ditandatangani code signing certificate.
+Tambahkan screenshot UI ke repo jika diperlukan, misalnya di `docs/images/`.
 
-## 5) Current GUI Scope
+## Security Notes
 
-Tab `Maintenance` berisi group `Auto Maintenance` dengan checklist:
+- Gunakan hanya URL script yang kamu kontrol.
+- Untuk production, pin ke tag rilis (mis. `v2.1.0`) agar tidak bergantung pada branch mutable.
+- Tambahkan checksum validation jika mau hardening lebih lanjut.
+- Opsi terbaik: gunakan code signing certificate.
 
-- Create Restore Point
-- Delete Temporary File
-- Delete Prefetch File
-- Run Disk Cleanup
-- Set Services to Manual
+## Release
 
-Tab `Networking` berisi group `Auto Networking` (contoh awal):
+- Current release: `v2.1.0`
 
-- Flush DNS Cache
-- Renew IP Address
-
-Tab `Security` berisi group `Auto Security` (contoh awal):
-
-- Enable Windows Firewall (All Profiles)
-- Quick Microsoft Defender Scan
-
-Tab `Update` berisi group `Auto Update` (contoh awal):
-
-- Open Windows Update Settings
-- Winget Upgrade All
-
-Arsitektur tetap modular: setiap item checklist punya script sendiri di folder kategori masing-masing.
