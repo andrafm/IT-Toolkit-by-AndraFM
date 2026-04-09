@@ -28,11 +28,28 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 
 ## Run via IRM
 
-Gunakan command berikut:
+Pilihan command instalasi:
+
+1) Permanent short endpoint (disarankan untuk dibagikan):
 
 ```powershell
-irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/master/bootstrap.ps1" | iex
+irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/main/i.ps1" | iex
 ```
+
+2) Pinned release (stabil, reproducible):
+
+```powershell
+irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/v2.1.4/bootstrap.ps1" | iex
+```
+
+3) Versi singkat dengan variable URL:
+
+```powershell
+$u = "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/main/i.ps1"
+irm $u | iex
+```
+
+Catatan: `bootstrap.ps1` sekarang menjalankan toolkit dari hasil extract ZIP release agar path config modular selalu valid.
 
 ## Screenshot
 
@@ -47,5 +64,19 @@ Tambahkan screenshot UI ke repo jika diperlukan, misalnya di `docs/images/`.
 
 ## Release
 
-- Current release: `v2.1.0`
+- Current release: `v2.1.4`
+
+## Smoke Test Bootstrap
+
+Jalankan smoke test ini sebelum buat rilis baru:
+
+```powershell
+.\scripts\smoke-bootstrap.ps1
+```
+
+Script ini memverifikasi:
+- Syntax `bootstrap.ps1` valid
+- Tidak ada baris terlarang `Invoke-Expression $scriptContent`
+- `releaseTag` terbaca
+- Konten bootstrap yang ter-publish sesuai pola launcher ZIP
 
