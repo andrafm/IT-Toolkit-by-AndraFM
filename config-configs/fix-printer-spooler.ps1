@@ -30,9 +30,7 @@ Stop-Service -Name spooler -Force -ErrorAction SilentlyContinue
 
 Write-Output '[2] Hapus file antrian printer...'
 if (Test-Path -Path $spoolPath) {
-    Get-ChildItem -Path $spoolPath -Force -ErrorAction SilentlyContinue | ForEach-Object {
-        Remove-Item -Path $_.FullName -Force -Recurse -ErrorAction SilentlyContinue
-    }
+    Remove-Item -Path (Join-Path $spoolPath '*') -Force -ErrorAction SilentlyContinue
 }
 
 Write-Output '[3] Start Printer Spooler...'
