@@ -1,8 +1,8 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$today = (Get-Date).ToString("yyyyMMdd")
-$bootstrapUrl = "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/master/bootstrap.ps1?bust=$today"
+$cacheBust = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+$bootstrapUrl = "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/master/bootstrap.ps1?bust=$cacheBust"
 
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
