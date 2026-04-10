@@ -476,13 +476,57 @@ function New-CategoryPage {
                         return
                     }
 
-                    $singleEntry = New-Object System.Collections.ArrayList
-                    [void]$singleEntry.Add($ctx.Entry)
+                    $writeLog = {
+                        param(
+                            [System.Windows.Forms.TextBox]$Box,
+                            [string]$Message
+                        )
+                        $ts = (Get-Date).ToString("HH:mm:ss")
+                        $line = "[$ts] $Message"
+                        if ($null -ne $Box) {
+                            $Box.AppendText("$line$([Environment]::NewLine)")
+                        }
+                        else {
+                            Write-Host $line
+                        }
+                    }
+
+                    $entryToRun = $ctx.Entry
+
+                    if ($entryToRun.RequiresAdmin -and -not (Test-Admin)) {
+                        [System.Windows.Forms.MessageBox]::Show(
+                            "Aksi '$($entryToRun.Label)' butuh Run as Administrator.",
+                            "Need Administrator",
+                            [System.Windows.Forms.MessageBoxButtons]::OK,
+                            [System.Windows.Forms.MessageBoxIcon]::Warning
+                        ) | Out-Null
+                        & $writeLog -Box $ctx.OutputBox -Message "Skipped: $($entryToRun.Label) (need administrator)."
+                        return
+                    }
+
+                    if ($null -ne $ctx.StatusLabel) {
+                        $ctx.StatusLabel.Text = "Status: Running $($entryToRun.Label)..."
+                    }
+
+                    & $writeLog -Box $ctx.OutputBox -Message "$($ctx.Category)/Fixes started: $($entryToRun.Label)"
                     try {
-                        $invokeCategorySelectionFn.Invoke("$($ctx.Category)/Fixes", $singleEntry, $ctx.OutputBox, $ctx.StatusLabel)
+                        $result = & $entryToRun.FilePath -Execute 2>&1 | Out-String
+                        if (-not [string]::IsNullOrWhiteSpace($result)) {
+                            $result.TrimEnd().Split([Environment]::NewLine) | ForEach-Object {
+                                if (-not [string]::IsNullOrWhiteSpace($_)) {
+                                    & $writeLog -Box $ctx.OutputBox -Message "  $_"
+                                }
+                            }
+                        }
+                        & $writeLog -Box $ctx.OutputBox -Message "Done: $($entryToRun.Label)"
                     }
                     catch {
-                        $addLogFn.Invoke($ctx.OutputBox, "Failed: $($ctx.Entry.Label) -> $($_.Exception.Message)")
+                        & $writeLog -Box $ctx.OutputBox -Message "Failed: $($entryToRun.Label) -> $($_.Exception.Message)"
+                    }
+                    finally {
+                        if ($null -ne $ctx.StatusLabel) {
+                            $ctx.StatusLabel.Text = "Status: Idle"
+                        }
                     }
                 }.GetNewClosure())
                 [void]$fixButtonsPanel.Controls.Add($button)
