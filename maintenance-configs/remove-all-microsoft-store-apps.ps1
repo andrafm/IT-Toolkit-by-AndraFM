@@ -26,8 +26,6 @@ $targetApps = @(
     'Microsoft.WindowsSoundRecorder',
     'Microsoft.MicrosoftStickyNotes',
     'Microsoft.Windows.DevHome',
-    'Microsoft.Paint',
-    'Microsoft.OutlookForWindows',
     'Microsoft.WindowsAlarms',
     'Microsoft.StartExperiencesApp',
     'Microsoft.GetHelp',
