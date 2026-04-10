@@ -41,7 +41,24 @@ Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath -UseBasicParsing
 Write-Host "Extracting package..." -ForegroundColor Cyan
 Expand-Archive -Path $zipPath -DestinationPath $extractRoot -Force
 
-Write-Host "Removing security restrictions from extracted files..." -ForegroundColor Cyan
+Write-Host "Cleaning and preparing scripts for execution..." -ForegroundColor Cyan
+$configDirs = @("maintenance-configs", "networking-configs", "security-configs", "update-configs")
+foreach ($configDir in $configDirs) {
+    $srcPath = Get-ChildItem -Path $extractRoot -Recurse -Directory -Filter $configDir | Select-Object -First 1 -ExpandProperty FullName
+    if ($srcPath) {
+        Get-ChildItem -Path $srcPath -Filter "*.ps1" | ForEach-Object {
+            $content = Get-Content -Path $_.FullName -Raw -Encoding UTF8
+            Set-Content -Path $_.FullName -Value $content -Encoding UTF8 -Force
+            try {
+                Unblock-File -Path $_.FullName -Confirm:$false -ErrorAction SilentlyContinue
+            }
+            catch {
+                # Silently continue
+            }
+        }
+    }
+}
+
 Get-ChildItem -Path $extractRoot -Recurse -Filter "*.ps1" | ForEach-Object {
     try {
         Unblock-File -Path $_.FullName -Confirm:$false -ErrorAction SilentlyContinue
