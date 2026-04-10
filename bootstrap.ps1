@@ -31,6 +31,16 @@ Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath -UseBasicParsing
 Write-Host "Extracting package..." -ForegroundColor Cyan
 Expand-Archive -Path $zipPath -DestinationPath $extractRoot -Force
 
+Write-Host "Removing security restrictions from extracted files..." -ForegroundColor Cyan
+Get-ChildItem -Path $extractRoot -Recurse -Filter "*.ps1" | ForEach-Object {
+    try {
+        Unblock-File -Path $_.FullName -Confirm:$false -ErrorAction SilentlyContinue
+    }
+    catch {
+        # Silently continue if unblock fails
+    }
+}
+
 $toolkitPath = Get-ChildItem -Path $extractRoot -Recurse -Filter "ITToolkit.ps1" -File |
     Select-Object -First 1 -ExpandProperty FullName
 
