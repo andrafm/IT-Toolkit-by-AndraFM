@@ -3,25 +3,15 @@ $ErrorActionPreference = "Stop"
 
 $repoOwner = "andrafirmansyah250699-ship-it"
 $repoName = "IT-Toolkit-by-AndraFM"
-$releaseTag = "v2.2.2"
+$sourceRef = "master"
+$cacheBust = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 
-$latestReleaseUrl = "https://api.github.com/repos/$repoOwner/$repoName/releases/latest"
-try {
-    $latest = Invoke-RestMethod -Uri $latestReleaseUrl -UseBasicParsing -Headers @{ "User-Agent" = "ITToolkit-Bootstrap" }
-    if ($null -ne $latest -and -not [string]::IsNullOrWhiteSpace([string]$latest.tag_name)) {
-        $releaseTag = [string]$latest.tag_name
-    }
-}
-catch {
-    # Fallback to default releaseTag when GitHub API is unavailable.
-}
+Write-Host "Using source: branch/$sourceRef" -ForegroundColor Cyan
 
-Write-Host "Using release tag: $releaseTag" -ForegroundColor Cyan
-
-$zipUrl = "https://github.com/$repoOwner/$repoName/archive/refs/tags/$releaseTag.zip"
+$zipUrl = "https://codeload.github.com/$repoOwner/$repoName/zip/refs/heads/$sourceRef?bust=$cacheBust"
 $tempRoot = Join-Path $env:TEMP "ITToolkit-AndraFM"
-$zipPath = Join-Path $tempRoot "$releaseTag.zip"
-$extractRoot = Join-Path $tempRoot $releaseTag
+$zipPath = Join-Path $tempRoot "$sourceRef.zip"
+$extractRoot = Join-Path $tempRoot $sourceRef
 
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -35,7 +25,9 @@ if (-not (Test-Path -Path $tempRoot)) {
 }
 
 Write-Host "Cleaning up old extracted versions..." -ForegroundColor Cyan
-Get-ChildItem -Path $tempRoot -Directory -Filter "v*" -ErrorAction SilentlyContinue | ForEach-Object {
+Get-ChildItem -Path $tempRoot -Directory -ErrorAction SilentlyContinue | Where-Object {
+    $_.Name -eq "master" -or $_.Name -like "v*"
+} | ForEach-Object {
     try {
         Remove-Item -Path $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
     }
