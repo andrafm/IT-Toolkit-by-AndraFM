@@ -1,8 +1,22 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+$repoOwner = "andrafirmansyah250699-ship-it"
+$repoName = "IT-Toolkit-by-AndraFM"
 $cacheBust = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
-$bootstrapUrl = "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/master/bootstrap.ps1?bust=$cacheBust"
+$bootstrapUrl = "https://raw.githubusercontent.com/$repoOwner/$repoName/master/bootstrap.ps1?bust=$cacheBust"
+
+try {
+    $branchInfoUrl = "https://api.github.com/repos/$repoOwner/$repoName/branches/master"
+    $branchInfo = Invoke-RestMethod -Uri $branchInfoUrl -UseBasicParsing -Headers @{ "User-Agent" = "ITToolkit-Launcher" }
+    $headSha = [string]$branchInfo.commit.sha
+    if (-not [string]::IsNullOrWhiteSpace($headSha)) {
+        $bootstrapUrl = "https://raw.githubusercontent.com/$repoOwner/$repoName/$headSha/bootstrap.ps1"
+    }
+}
+catch {
+    # Fallback to cache-busted master bootstrap URL.
+}
 
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12

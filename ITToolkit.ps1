@@ -1,7 +1,7 @@
 ﻿Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$Global:ToolkitVersion = "2.2.2"
+$Global:ToolkitVersion = "2.2.3"
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -183,6 +183,9 @@ function New-CategoryPage {
     )
 
     $entries = New-Object System.Collections.ArrayList
+    [scriptblock]$getCategoryEntriesFn = ${function:Get-CategoryEntries}
+    [scriptblock]$invokeCategorySelectionFn = ${function:Invoke-CategorySelection}
+    [scriptblock]$addLogFn = ${function:Add-Log}
 
     $page = New-Object System.Windows.Forms.Panel
     $page.Dock = [System.Windows.Forms.DockStyle]::Fill
@@ -432,7 +435,7 @@ function New-CategoryPage {
             $fixButtonsPanel.Controls.Clear()
         }
 
-        $loaded = Get-CategoryEntries -FolderName $Category.FolderName
+        $loaded = $getCategoryEntriesFn.Invoke($Category.FolderName)
         foreach ($entry in $loaded) {
             [void]$entries.Add($entry)
 
@@ -476,17 +479,10 @@ function New-CategoryPage {
                     $singleEntry = New-Object System.Collections.ArrayList
                     [void]$singleEntry.Add($ctx.Entry)
                     try {
-                        Invoke-CategorySelection -CategoryName "$($ctx.Category)/Fixes" -SelectedEntries $singleEntry -OutputBox $ctx.OutputBox -StatusLabel $ctx.StatusLabel
+                        $invokeCategorySelectionFn.Invoke("$($ctx.Category)/Fixes", $singleEntry, $ctx.OutputBox, $ctx.StatusLabel)
                     }
                     catch {
-                        $timestamp = (Get-Date).ToString("HH:mm:ss")
-                        $message = "[$timestamp] Failed: $($ctx.Entry.Label) -> $($_.Exception.Message)"
-                        if ($null -ne $ctx.OutputBox) {
-                            $ctx.OutputBox.AppendText("$message$([Environment]::NewLine)")
-                        }
-                        else {
-                            Write-Host $message
-                        }
+                        $addLogFn.Invoke($ctx.OutputBox, "Failed: $($ctx.Entry.Label) -> $($_.Exception.Message)")
                     }
                 }.GetNewClosure())
                 [void]$fixButtonsPanel.Controls.Add($button)
@@ -497,7 +493,7 @@ function New-CategoryPage {
             }
         }
 
-        Add-Log -OutputBox $outputBox -Message "Loaded $($entries.Count) config(s) from $($Category.FolderName)."
+        $addLogFn.Invoke($outputBox, "Loaded $($entries.Count) config(s) from $($Category.FolderName).")
     }.GetNewClosure()
 
     if ($isMaintenanceCategory) {
@@ -555,7 +551,7 @@ function New-CategoryPage {
                 }
             }
 
-            Invoke-CategorySelection -CategoryName $Category.Name -SelectedEntries $selectedEntries -OutputBox $outputBox -StatusLabel $statusLabel
+            $invokeCategorySelectionFn.Invoke($Category.Name, $selectedEntries, $outputBox, $statusLabel)
         }.GetNewClosure())
     }
 
