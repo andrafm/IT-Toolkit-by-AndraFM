@@ -31,19 +31,25 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 
 Pilihan command instalasi:
 
-1) Permanent short endpoint (disarankan untuk dibagikan):
+1) GitHub Pages endpoint (lebih rapi untuk dibagikan):
+
+```powershell
+irm "https://andrafirmansyah250699-ship-it.github.io/IT-Toolkit-by-AndraFM/i.ps1" | iex
+```
+
+2) Raw GitHub endpoint:
 
 ```powershell
 irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/master/i.ps1" | iex
 ```
 
-2) Pinned release (stabil, reproducible):
+3) Pinned release (stabil, reproducible):
 
 ```powershell
 irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/v2.1.0/bootstrap.ps1" | iex
 ```
 
-3) Versi singkat dengan variable URL:
+4) Versi singkat dengan variable URL:
 
 ```powershell
 $u = "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/master/i.ps1"
