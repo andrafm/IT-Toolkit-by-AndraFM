@@ -17,12 +17,14 @@ if (-not $Execute) {
 Write-Output 'Stopping Edge-related processes...'
 Get-Process -Name 'msedge', 'msedgewebview2', 'MicrosoftEdgeUpdate' -ErrorAction SilentlyContinue |
     ForEach-Object {
+        $procName = $_.ProcessName
+        $procId = $_.Id
         try {
-            Stop-Process -Id $_.Id -Force -ErrorAction Stop
-            Write-Output "Stopped process: $($_.ProcessName)"
+            Stop-Process -Id $procId -Force -ErrorAction Stop
+            Write-Output "Stopped process: $procName"
         }
         catch {
-            Write-Output "Could not stop process: $($_.ProcessName)"
+            Write-Output "Could not stop process: $procName"
         }
     }
 
