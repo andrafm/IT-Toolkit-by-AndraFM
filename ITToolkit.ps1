@@ -483,7 +483,7 @@ function New-CategoryPage {
                         Invoke-CategorySelection -CategoryName "$($ctx.Category)/Fixes" -SelectedEntries $singleEntry -OutputBox $ctx.OutputBox -StatusLabel $ctx.StatusLabel
                     }
                     catch {
-                        Add-Log -OutputBox $ctx.OutputBox -Message "Failed: $($ctx.Entry.Label) -> $($_.Exception.Message)"
+                        & $addLogFn -OutputBox $ctx.OutputBox -Message "Failed: $($ctx.Entry.Label) -> $($_.Exception.Message)"
                     }
                 }.GetNewClosure())
                 [void]$fixButtonsPanel.Controls.Add($button)
