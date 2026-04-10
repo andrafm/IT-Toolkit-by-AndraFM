@@ -672,6 +672,21 @@ function Show-ToolkitGui {
     }
 
     $form.Add_Shown({ $form.Activate() })
+    
+    $form.Add_FormClosing({
+        $tempRoot = Join-Path $env:TEMP "ITToolkit-AndraFM"
+        if (Test-Path -Path $tempRoot) {
+            try {
+                Write-Host "Cleaning up temporary files..." -ForegroundColor Cyan
+                Remove-Item -Path $tempRoot -Recurse -Force -ErrorAction SilentlyContinue
+                Write-Host "Cleanup completed." -ForegroundColor Green
+            }
+            catch {
+                Write-Host "Warning: Could not clean temp folder - $($_.Exception.Message)" -ForegroundColor Yellow
+            }
+        }
+    })
+    
     [void]$form.ShowDialog()
 }
 

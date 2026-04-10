@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 
 $repoOwner = "andrafirmansyah250699-ship-it"
 $repoName = "IT-Toolkit-by-AndraFM"
-$releaseTag = "v2.1.10"
+$releaseTag = "v2.1.11"
 
 $zipUrl = "https://github.com/$repoOwner/$repoName/archive/refs/tags/$releaseTag.zip"
 $tempRoot = Join-Path $env:TEMP "ITToolkit-AndraFM"
@@ -19,6 +19,16 @@ catch {
 
 if (-not (Test-Path -Path $tempRoot)) {
     New-Item -Path $tempRoot -ItemType Directory -Force | Out-Null
+}
+
+Write-Host "Cleaning up old extracted versions..." -ForegroundColor Cyan
+Get-ChildItem -Path $tempRoot -Directory -Filter "v*" -ErrorAction SilentlyContinue | ForEach-Object {
+    try {
+        Remove-Item -Path $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    catch {
+        # Silently continue if cleanup fails
+    }
 }
 
 if (Test-Path -Path $extractRoot) {

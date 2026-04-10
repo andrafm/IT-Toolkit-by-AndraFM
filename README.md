@@ -39,7 +39,7 @@ irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-
 2) Pinned release (stabil, reproducible):
 
 ```powershell
-irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/v2.1.10/bootstrap.ps1" | iex
+irm "https://raw.githubusercontent.com/andrafirmansyah250699-ship-it/IT-Toolkit-by-AndraFM/v2.1.11/bootstrap.ps1" | iex
 ```
 
 3) Versi singkat dengan variable URL:
@@ -64,7 +64,7 @@ Tambahkan screenshot UI ke repo jika diperlukan, misalnya di `docs/images/`.
 
 ## Release
 
-- Current release: `v2.1.10`
+- Current release: `v2.1.11`
 
 ## Smoke Test Bootstrap
 
