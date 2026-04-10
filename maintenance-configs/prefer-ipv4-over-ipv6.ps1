@@ -14,5 +14,7 @@ if (-not $Execute) {
     return $config
 }
 
-Write-Output 'Planned action: Prefer IPv4 over IPv6'
-Write-Output 'Status: Placeholder action is listed for Advanced grouping and ready for implementation.'
+$regPath = 'HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters'
+if (-not (Test-Path $regPath)) { New-Item -Path $regPath -Force | Out-Null }
+Set-ItemProperty -Path $regPath -Name 'DisabledComponents' -Value 0x20 -Type DWord -Force
+Write-Output 'IPv4 preferred over IPv6 (DisabledComponents = 0x20).'

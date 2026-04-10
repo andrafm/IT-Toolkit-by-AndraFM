@@ -14,5 +14,7 @@ if (-not $Execute) {
     return $config
 }
 
-Write-Output 'Planned action: Set Time to UTC (Dual Boot)'
-Write-Output 'Status: Placeholder action is listed for Advanced grouping and ready for implementation.'
+$path = 'HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation'
+Set-ItemProperty -Path $path -Name 'RealTimeIsUniversal' -Value 1 -Type DWord -Force
+Write-Output 'RealTimeIsUniversal registry key set to 1.'
+Write-Output 'Windows will now read hardware clock as UTC, fixing dual-boot time sync with Linux.'

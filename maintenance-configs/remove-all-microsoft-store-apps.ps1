@@ -14,5 +14,15 @@ if (-not $Execute) {
     return $config
 }
 
-Write-Output 'Planned action: Remove all Microsoft Store apps'
-Write-Output 'Status: Placeholder action is listed for Advanced grouping and ready for implementation.'
+$keepApps = @('Microsoft.WindowsStore','Microsoft.StorePurchaseApp','Microsoft.DesktopAppInstaller','Microsoft.WindowsCalculator','Microsoft.Windows.Photos','Microsoft.WindowsNotepad','Microsoft.WindowsTerminal')
+$removed = 0
+Get-AppxPackage -AllUsers | Where-Object { $keepApps -notcontains $_.Name } | ForEach-Object {
+    try {
+        Remove-AppxPackage -Package $_.PackageFullName -AllUsers -ErrorAction SilentlyContinue
+        Write-Output "Removed: $($_.Name)"
+        $removed++
+    } catch {
+        Write-Output "Skipped: $($_.Name)"
+    }
+}
+Write-Output "Store apps removal completed. Removed: $removed app(s).`nNote: Essential apps (Store, Calculator, Notepad, Photos, Terminal) were kept."

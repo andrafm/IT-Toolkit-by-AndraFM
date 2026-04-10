@@ -14,5 +14,14 @@ if (-not $Execute) {
     return $config
 }
 
-Write-Output 'Planned action: Set Display for Performance'
-Write-Output 'Status: Placeholder action is listed for Advanced grouping and ready for implementation.'
+# Set Visual Effects to 'Adjust for best performance'
+$path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects'
+if (-not (Test-Path $path)) { New-Item -Path $path -Force | Out-Null }
+Set-ItemProperty -Path $path -Name 'VisualFXSetting' -Value 2 -Type DWord -Force
+
+$path2 = 'HKCU:\Control Panel\Desktop'
+Set-ItemProperty -Path $path2 -Name 'DragFullWindows' -Value '0' -Force
+Set-ItemProperty -Path $path2 -Name 'FontSmoothing' -Value '0' -Force
+Set-ItemProperty -Path $path2 -Name 'UserPreferencesMask' -Value ([byte[]](0x90,0x12,0x03,0x80,0x10,0x00,0x00,0x00)) -Type Binary -Force
+
+Write-Output 'Display configured for best performance (visual effects minimized).'
