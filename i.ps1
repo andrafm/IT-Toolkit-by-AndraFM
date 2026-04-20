@@ -1,7 +1,7 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$repoOwner = "andrafirmansyah250699-ship-it"
+$repoOwner = "andrafm"
 $repoName = "IT-Toolkit-by-AndraFM"
 $cacheBust = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 $bootstrapUrl = "https://raw.githubusercontent.com/$repoOwner/$repoName/master/bootstrap.ps1?bust=$cacheBust"
